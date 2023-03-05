@@ -1,11 +1,9 @@
 // import { Image, Transformation } from "cloudinary-react";
 
-const LessonCard: React.FC<{
-  id: string;
-  title: string;
-  level: number;
-  text: string;
-}> = ({ id, title, level, text }) => {
+import { Lesson } from "types";
+import Link from "next/link";
+
+const LessonCard = ({ id, title, level, text }: Lesson) => {
   const truncatedText = () => {
     if (text?.length > 500) {
       return `${text.substr(0, text.lastIndexOf(" ", 500))}...`;
@@ -40,19 +38,19 @@ const LessonCard: React.FC<{
 
   return (
     <div className="flex flex-col bg-gray-200 p-3 rounded-lg">
-      {/* <Link to={`/lessons/${id}`}> */}
+      {/* <Link to={`/lessons/${id}`}>
       <div>
-        {/* <Image publicId={preparedUrl} alt="lesson image">
+        <Image publicId={preparedUrl} alt="lesson image">
             <Transformation height="195" width="163" crop="fill" />
-          </Image> */}
+          </Image>
       </div>
-      {/* </Link>
-      <Link to={`/lessons/${id}`}> */}
-      <div className="">
-        <h3 className="">{title}</h3>
-        {/* <p className="">{text}</p> */}
-      </div>
-      {/* </Link> */}
+      </Link> */}
+      <Link href={`/lessons/${id}`}>
+        <div className="">
+          <h3 className="">{title}</h3>
+          {/* <p className="">{text}</p> */}
+        </div>
+      </Link>
       <h3 className="">{getLevel(level)}</h3>
     </div>
   );

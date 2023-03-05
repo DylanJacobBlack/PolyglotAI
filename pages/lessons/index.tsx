@@ -1,25 +1,22 @@
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
-
+import { PrismaClient } from "@prisma/client";
 import AuthContext from "store/auth-context";
 import LangContext from "store/lang-context";
 
 import LessonCard from "components/Lesson/LessonCard";
-import loadingSpinner from "../assets/spinner.jpg";
+// import loadingSpinner from "../assets/spinner.jpg";
 import Image from "next/image";
+import { Lesson } from "types";
 
-interface Lesson {
-  id: string;
-  title: string;
-  level: number;
-  text: string;
+interface LessonsProps {
+  lessons: Array<Lesson>;
 }
 
-const Lessons = () => {
+const Lessons = ({ lessons }: LessonsProps) => {
   const router = useRouter();
-  const [lessons, setLessons] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [error, setError] = useState("");
 
   const authCtx = useContext(AuthContext);
   const isLoggedIn = authCtx.isLoggedIn;
@@ -29,59 +26,34 @@ const Lessons = () => {
     langCtx.enable();
   }, [langCtx]);
 
-  useEffect(() => {
-    if (langCtx.language !== null) {
-      (async function () {
-        try {
-          setIsLoading(true);
-          setError('');
-          const response = await fetch("http://localhost:3000/api/v1/lessons");
+  // useEffect(() => {
+  //   if (langCtx.language !== null) {
+  //     (async function () {
+  //       try {
+  //         setIsLoading(true);
+  //         setError("");
+  //         const response = await fetch("http://localhost:3000/api/v1/lessons");
 
-          if (!response.ok) {
-            throw new Error("Something went wrong.");
-          }
-          const lessonData = await response.json();
-          // const filteredLessons = data.lessons.filter(
-          //   (lesson: Lesson) => lesson.language.name === langCtx.language
-          // );
-          setLessons(lessonData);
-        } catch (error: any) {
-          setError(error.message);
-        }
-        setIsLoading(false);
-      })();
-    } else router.push("/");
-  }, [langCtx.language, router]);
-
-  let status = "";
-
-  if (error.length) {
-    status = error;
-  }
+  //         if (!response.ok) {
+  //           throw new Error("Something went wrong.");
+  //         }
+  //         const lessonData = await response.json();
+  //         // const filteredLessons = data.lessons.filter(
+  //         //   (lesson: Lesson) => lesson.language.name === langCtx.language
+  //         // );
+  //         setLessons(lessonData);
+  //       } catch (error: any) {
+  //         setError(error.message);
+  //       }
+  //       setIsLoading(false);
+  //     })();
+  //   } else router.push("/");
+  // }, [langCtx.language, router]);
 
   return (
     <div className="min-h-screen min-w-full bg-white flex justify-center items-center">
-      {isLoading && (
-        <div className="">
-          Loading...
-          {/* <Image
-            className="spinner"
-            src={loadingSpinner}
-            alt="Loading spinner"
-          /> */}
-        </div>
-      )}
-      {status !== "" && (
-        <div className="">
-          <div className="">
-            <h1>{status}</h1>
-          </div>
-        </div>
-      )}
       <div className="flex flex-wrap row gap-4 h-3/4 w-3/4">
-        {!isLoading &&
-          // langCtx.language !== null &&
-          lessons.length > 0 &&
+        {lessons.length > 0 &&
           lessons.map((lesson: Lesson) => (
             <LessonCard
               key={lesson.id}
@@ -96,5 +68,15 @@ const Lessons = () => {
     </div>
   );
 };
+
+export async function getStaticProps() {
+  const prisma = new PrismaClient();
+  const lessons = await prisma.lesson.findMany();
+  return {
+    props: {
+      lessons,
+    },
+  };
+}
 
 export default Lessons;

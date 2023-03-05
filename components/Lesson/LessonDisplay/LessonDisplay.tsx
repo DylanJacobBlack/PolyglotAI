@@ -4,8 +4,11 @@ import React, {
   useState,
   useCallback,
   useContext,
+  MutableRefObject,
 } from "react";
-import { useResizeDetector } from "react-resize-detector";
+import {
+  useResizeDetector,
+} from "react-resize-detector";
 
 import classes from "./LessonDisplay.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,9 +16,15 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import Definition from "./Definition";
+// import Definition from "./Definition";
 // import LangContext from "../../store/lang-context";
 
+const pagePaddingLeft = 60;
+const pagePaddingRight = 60;
+const pagePaddingTop = 48;
+const pagePaddingBottom = 48;
+const approxWordsPerPage = 200;
+const lineHeight = 33;
 interface LessonDisplayInterface {
   text: string;
   isLoading: boolean;
@@ -23,10 +32,11 @@ interface LessonDisplayInterface {
 }
 
 const LessonDisplay = ({ text, isLoading, status }: LessonDisplayInterface) => {
+  console.log(text)
   // const langCtx = useContext(LangContext);
 
-  const [lessonPages, setLessonPages] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [lessonPages, setLessonPages] = useState<JSX.Element[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(0);
   const [modalSwitch, setModalSwitch] = useState(false);
   const [topClick, setTopClick] = useState(false);
   const [translation, setTranslation] = useState({
@@ -35,14 +45,7 @@ const LessonDisplay = ({ text, isLoading, status }: LessonDisplayInterface) => {
   });
   const [defIsLoading, setDefIsLoading] = useState(false);
 
-  const canvasRef = useRef();
-
-  const pagePaddingLeft = 60;
-  const pagePaddingRight = 60;
-  const pagePaddingTop = 48;
-  const pagePaddingBottom = 48;
-  const approxWordsPerPage = 200;
-  const lineHeight = 33;
+  const canvasRef = useRef() as MutableRefObject<HTMLCanvasElement>;
 
   // const wordHandler = useCallback(
   //   (event: MouseEvent) => {
@@ -94,9 +97,11 @@ const LessonDisplay = ({ text, isLoading, status }: LessonDisplayInterface) => {
     };
   }, [currentPage, lessonPages]);
 
+  console.log(currentPage)
+
   const onResize = useCallback(
-    (width: number, height: number) => {
-      if (isLoading === false && status === "") {
+    (width?: number, height?: number) => {
+      if (isLoading === false && status === "" && width && height && text) {
         const pages = [];
 
         let maxWidth = 300;
@@ -145,7 +150,7 @@ const LessonDisplay = ({ text, isLoading, status }: LessonDisplayInterface) => {
         };
 
         const textToLines = (
-          words: Array<string>,
+          words: Array<string | number>,
           maxWidth: number,
           maxLines: number,
           x: number,
@@ -205,8 +210,8 @@ const LessonDisplay = ({ text, isLoading, status }: LessonDisplayInterface) => {
           return linesOfLinks;
         };
 
-        const drawSvg = (linesOfLinks:Array<JSX.Element>, x: any, i: number) => {
-          const tspans = [];
+        const drawSvg = (linesOfLinks: JSX.Element[][], x: any, i: number) => {
+          const tspans: Array<JSX.Element> = [];
           linesOfLinks.forEach((line, index) => {
             const tspan = (
               <tspan
@@ -260,7 +265,7 @@ const LessonDisplay = ({ text, isLoading, status }: LessonDisplayInterface) => {
 
         if (lessonPages) prevPageNum = lessonPages.length;
         setLessonPages(pages);
-        if (prevPageNum > 0) {
+        if (prevPageNum && prevPageNum > 0) {
           const newPageNumber = Math.round(
             currentPage * (pageNum / prevPageNum)
           );
@@ -268,23 +273,16 @@ const LessonDisplay = ({ text, isLoading, status }: LessonDisplayInterface) => {
         }
       }
     },
-    [
-      props.text,
-      props.isLoading,
-      props.status,
-      wordHandler,
-      currentPage,
-      lessonPages,
-    ]
+    [isLoading, status, text, currentPage, lessonPages]
   );
 
   const { ref } = useResizeDetector({ onResize });
 
-  const pageBackHandler = (event: Event) => {
+  const pageBackHandler = () => {
     if (currentPage > 0) setCurrentPage(currentPage - 1);
   };
 
-  const pageForwardHandler = (event: Event) => {
+  const pageForwardHandler = () => {
     if (currentPage < lessonPages.length - 1) setCurrentPage(currentPage + 1);
   };
 
@@ -296,7 +294,7 @@ const LessonDisplay = ({ text, isLoading, status }: LessonDisplayInterface) => {
   return (
     <div className={classes.lesson}>
       <canvas ref={canvasRef} className={classes.canvas} />
-      {modalSwitch && (
+      {/* {modalSwitch && (
         <Definition
           isLoading={defIsLoading}
           topClick={topClick}
@@ -304,17 +302,17 @@ const LessonDisplay = ({ text, isLoading, status }: LessonDisplayInterface) => {
           translation={translation.translation}
           onHide={onHideHandler}
         />
-      )}
-      <button className={classes.button} onClick={pageBackHandler}>
+      )} */}
+      <button className={classes.button} onClick={() => pageBackHandler()}>
         <FontAwesomeIcon icon={faChevronLeft} />
       </button>
       <div className={classes.page} ref={ref}>
-        {!props.isLoading &&
-          props.status === "" &&
+        {!isLoading &&
+          status === "" &&
           lessonPages !== null &&
           lessonPages[currentPage]}
       </div>
-      <button className={classes.button} onClick={pageForwardHandler}>
+      <button className={classes.button} onClick={() => pageForwardHandler()}>
         <FontAwesomeIcon icon={faChevronRight} />
       </button>
     </div>

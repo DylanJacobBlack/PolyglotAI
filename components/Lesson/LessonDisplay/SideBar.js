@@ -1,6 +1,6 @@
 import classes from "./SideBar.module.css";
 
-import { Image, Transformation } from "cloudinary-react";
+// import { Image, Transformation } from "cloudinary-react";
 
 const SideBar = (props) => {
   let url;
@@ -12,9 +12,9 @@ const SideBar = (props) => {
 
   return (
     <div className={classes.sidebar}>
-      <Image publicId={url} alt="lesson image">
+      {/* <Image publicId={url} alt="lesson image">
         <Transformation height="195" width="160" crop="fill" />
-      </Image>
+      </Image> */}
       <div className={classes.info}>{props.title}</div>
       {/* <h3>{props.level}</h3> */}
     </div>
