@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 // import LangContext from "../store/lang-context";
 
 import classes from "./Lesson.module.css";
-import SideBar from "components/Lesson/SideBar";
+import SideBar from "components/Lesson/LessonDisplay/SideBar";
 import LessonDisplay from "components/Lesson/LessonDisplay/LessonDisplay";
 // import loadingSpinner from "../assets/spinner.jpg"
 

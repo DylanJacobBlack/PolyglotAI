@@ -1,9 +1,11 @@
 // import { Image, Transformation } from "cloudinary-react";
+import { CldImage } from "next-cloudinary";
 
 import { Lesson } from "types";
 import Link from "next/link";
+import { Card } from "flowbite-react";
 
-const LessonCard = ({ id, title, level, text }: Lesson) => {
+const LessonCard = ({ id, title, level, text, imageId }: Lesson) => {
   const truncatedText = () => {
     if (text?.length > 500) {
       return `${text.substr(0, text.lastIndexOf(" ", 500))}...`;
@@ -37,21 +39,21 @@ const LessonCard = ({ id, title, level, text }: Lesson) => {
   // )[0];
 
   return (
-    <div className="flex flex-col bg-gray-200 p-3 rounded-lg">
-      {/* <Link to={`/lessons/${id}`}>
-      <div>
-        <Image publicId={preparedUrl} alt="lesson image">
-            <Transformation height="195" width="163" crop="fill" />
-          </Image>
-      </div>
-      </Link> */}
-      <Link href={`/lessons/${id}`}>
-        <div className="">
-          <h3 className="">{title}</h3>
-          {/* <p className="">{text}</p> */}
+    <div className="w-64">
+      <Card className="backdrop-hue-rotate-180">
+        <CldImage className="w-fill h-36 object-cover object-top" width="600" height="600" src={imageId} alt="My Image" />
+        <div className="flex flex-col content-between gap-2 h-28">
+          <Link href={`/lessons/${id}`}>
+            <h3 className="text-l font-bold tracking-tight text-gray-900 dark:text-white">
+              {title}
+            </h3>
+          </Link>
+          <div className="flex-grow"></div>
+          <div className="font-normal text-gray-700 dark:text-gray-400">
+            <h3 className="text-sm">{getLevel(level)}</h3>
+          </div>
         </div>
-      </Link>
-      <h3 className="">{getLevel(level)}</h3>
+      </Card>
     </div>
   );
 };

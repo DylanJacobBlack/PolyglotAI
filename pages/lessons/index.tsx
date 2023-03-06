@@ -51,8 +51,8 @@ const Lessons = ({ lessons }: LessonsProps) => {
   // }, [langCtx.language, router]);
 
   return (
-    <div className="min-h-screen min-w-full bg-white flex justify-center items-center">
-      <div className="flex flex-wrap row gap-4 h-3/4 w-3/4">
+    <div className="min-w-full p-10 bg-white flex justify-center items-center">
+      <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6">
         {lessons.length > 0 &&
           lessons.map((lesson: Lesson) => (
             <LessonCard
@@ -61,7 +61,7 @@ const Lessons = ({ lessons }: LessonsProps) => {
               title={lesson.title}
               text={lesson.text}
               level={lesson.level}
-              // url={lesson.url}
+              imageId={lesson.imageId}
             />
           ))}
       </div>

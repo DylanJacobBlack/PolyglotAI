@@ -27,12 +27,12 @@ const NavBar = () => {
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
-        <Navbar.Link href="/navbars" active={true}>
+        <Navbar.Link href="/" active={true}>
           Welcome
         </Navbar.Link>
-        <Navbar.Link href="/navbars">Lessons</Navbar.Link>
-        <Navbar.Link href="/navbars">Create</Navbar.Link>
-        <Navbar.Link href="/navbars">Words</Navbar.Link>
+        <Navbar.Link href="/lessons">Lessons</Navbar.Link>
+        <Navbar.Link href="/">Create</Navbar.Link>
+        <Navbar.Link href="/">Words</Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
   );

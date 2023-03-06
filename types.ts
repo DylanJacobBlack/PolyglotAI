@@ -3,4 +3,5 @@ export interface Lesson {
   title: string;
   level: number;
   text: string;
+  imageId: string;
 }
